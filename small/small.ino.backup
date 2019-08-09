@@ -1,0 +1,81 @@
+define NUM_LEDS 140 // Dodecahedron: 1/vertex, 4/edge
+define NUM_LEDS_EDGE 6 // corner, 4 within edge, corner
+
+typedef uint32_t machineRgb;
+static machineRgb leds[NUM_LEDS] =
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+
+typedef struct {
+    hwPosition hwPos;
+    machineRgb rgb;
+} led;
+
+// DUMP
+
+
+
+#include "../lib/colors.h"
+
+typedef int position; // Relative index for LEDs within a shape
+typedef int hwPosition; // Index of the LED on the strip
+
+typedef struct {
+    hwPosition hwPos;
+    int rgb;
+} led;
+
+typedef struct {
+    int length;
+    led* leds;
+} ledLine;
+
+ledLine* newLedLine(int length, hardwarePosition* hwPos) {
+    led* leds = malloc(length * sizeof(led));
+    for(int i = 0; i < length; ++i) {
+        leds[i].hwPos = hwPos[i];
+        leds[i].rgb = {0, 0, 0};
+    }
+    return
+        { .length = length
+        , .leds   = leds };
+}
+
+void paintLedLine(ledLine* ledLine, rgbColor (*rgbColor)(position)) {
+    led* leds = *ledLine.leds;
+    for(int pos = 0; pos < *ledLine.length; ++pos) {
+        leds.rgbColor = rgbColor(pos);
+        ++leds;
+    }
+}
+
+void reverseLedLine(ledLine* ledLine) {
+    led* temp;
+    for(int i = 0; i < *ledLine.length / 2; ++i) {
+        temp = *ledLine.leds[i];
+        *ledLine.leds[i] = *ledLine.leds[*ledLine.length - i];
+        *ledLine.leds[*ledLine.length - i] = temp;
+    }
+}
+
+void deleteLedLine(ledLine* x) {
+    free(x.leds);
+}
+
+void loop() {}
+
+void setup() {
+
+}
