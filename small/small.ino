@@ -7,7 +7,7 @@
 #define NUM_LEDS 144
 
 CRGB leds[NUM_LEDS];
-CRGB leds2[NUM_LEDS];
+// CRGB leds2[NUM_LEDS];
 
 void setup() {
     Serial.begin(115200);
@@ -93,8 +93,12 @@ int particle_pos[NUM_PARTICLES] = {74, 74, 74, 74, 74, 74, 74, 74, 74, 74};
 void randomWalk() {
     fadeToBlackBy(leds, NUM_LEDS, 10);
     for(int i = 0; i < NUM_PARTICLES; ++i) {
-        particle_pos[i] += random8(0,2) > 0 ? -1 : 1;
-        particle_pos[i] = p(particle_pos[i]);
+        int random = random8(0, 10);
+        if(random == 0) {
+            particle_pos[i] = p(particle_pos[i] - 1);
+        } else if(random == 1) {
+            particle_pos[i] = p(particle_pos[i] + 1);
+        }
         leds[particle_pos[i]] |= CHSV(i*24, 255, 255);
     }
 }
